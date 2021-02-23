@@ -6,8 +6,12 @@ router.get("/", async (req, res) => {
   res.header("Access-Control-Allow-Origin", "*");
   let page = req.query.page ? req.query.page : 1;
   let count = req.query.count ? req.query.count : 10;
-  let term = req.query.term ? req.query.term : 10;
-  let friend = req.query.friend ? req.query.friend : 10;
+  // let term = req.query.term ? req.query.term : 10;
+  // let friend = req.query.friend ? req.query.friend : 10;
+  let myId = 0;
+  const me = await User.find({ id: +myId });
+  let myFollow = me[0].followed;
+  console.log(myFollow);
   const allUsers = await User.find();
   let arrUsers = [];
   let start = (page - 1) * count;
@@ -18,16 +22,19 @@ router.get("/", async (req, res) => {
     i < stop && i < allUsers.length && arrUsers.length < maximum;
     i++
   ) {
-    arrUsers.push(allUsers[i]);
+    let result = {
+      id: allUsers[i].id,
+      name: allUsers[i].name,
+      uniqueUrlName: allUsers[i].uniqueUrlName,
+      photos: allUsers[i].photos,
+      status: allUsers[i].status,
+      followed: myFollow.some((item) => item === allUsers[i].id),
+    };
+    arrUsers.push(result);
   }
   res
     .status(200)
     .json({ items: arrUsers, totalCount: allUsers.length, error: null });
-});
-
-router.get("/all", async (req, res) => {
-  const allUsers = await User.find();
-  res.status(200).json({ users: allUsers });
 });
 
 module.exports = router;

@@ -4,6 +4,8 @@ const mongoose = require("mongoose");
 const app = express();
 const homeRouter = require("./routes/home");
 const usersRouter = require("./routes/users");
+const profileRouter = require("./routes/profiles");
+const followRouter = require("./routes/follow");
 const PORT = process.env.PORT || 3001;
 const password = "V8d-VCL-HgG-Vua";
 const dbName = "socialNetwork";
@@ -15,6 +17,8 @@ app.use(express.urlencoded({ extended: true }));
 
 app.use("/", homeRouter);
 app.use("/users", usersRouter);
+app.use("/profile", profileRouter);
+app.use("/follow", followRouter);
 
 const start = async () => {
   try {
